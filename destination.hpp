@@ -4,7 +4,7 @@
 #include"Request.hpp"
 
 class Destination {
-private:
+protected:
     //The Destination that is directly above the current Destination in the hierarchy
     Destination * master;
     //The amount of work units that can be done
@@ -15,6 +15,5 @@ public:
     virtual void update() {};
     std::deque<Request> requestQueue;
 };
-
 
 #endif /* DESTINATION_HPP */

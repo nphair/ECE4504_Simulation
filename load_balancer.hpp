@@ -11,7 +11,7 @@ private:
     std::map<int, Destination*> RoundLoadDict;
 
 public:
-    LoadBalancer();
+    LoadBalancer(Destination*, int);
     void update() override;
 
 };
