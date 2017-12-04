@@ -3,4 +3,11 @@
 Server::Server()
 {
 
+
+
+}
+
+void Server::update()
+{
+
 }

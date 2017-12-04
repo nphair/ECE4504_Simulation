@@ -5,7 +5,8 @@
 class Server : public Destination {
 public:
     Server();
-
+    int showBlobs[100];
+    void update() override;
 };
 
 

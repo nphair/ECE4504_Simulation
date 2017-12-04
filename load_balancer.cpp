@@ -4,3 +4,8 @@ LoadBalancer::LoadBalancer()
 {
 
 }
+
+void LoadBalancer::update()
+{
+
+}
