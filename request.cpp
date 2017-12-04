@@ -4,5 +4,4 @@
 Request::Request(std::array<int, 10> requestedBlobs)
 {
     shows = requestedBlobs;
-
 }

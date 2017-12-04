@@ -4,9 +4,12 @@
 
 class Server : public Destination {
 public:
-    Server(Destination*, int);
+    Server(Destination*, int, int);
     int showBlobs[100];
+    int storageAmt;
     void update() override;
+    void setShowBlobs(int*);
+
 };
 
 
