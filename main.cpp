@@ -30,37 +30,35 @@ int main(int argc, char *argv[])
     //How do we distribute the ShowBlobs across the system?
     //How many showBlobs do we have? <-- requires knowing how much data in shows there are and then the minimum data in a server at its smallest storage size
     const int showBlobs = 100;
-    int * showBlobsArray = (int*) calloc(100, sizeof(int));
+    int blobIter = 0;
 
     LoadBalancer * masterLoadBalancer = new LoadBalancer(NULL, loadBalanceWork);
-    std::cout << "Master Init\n";
+    std::cout << "WSC Initialization Started...\n";
 
     for (int i = 0; i < numClusters; i++)
     {
-        std::cout << "Cluster " << i << "\n";
+        //std::cout << "Cluster " << i << "\n";
 
         //Cluster Level LoadBalancers
         masterLoadBalancer->slave[i] = new LoadBalancer(masterLoadBalancer, loadBalanceWork);
         LoadBalancer * currCluster = ((LoadBalancer*)(masterLoadBalancer->slave[i]));
-
         for (int j = 0; j < numRacksPerCluster; j++)
         {
             //Rack Level Load Balancers
             currCluster->slave[j] = new LoadBalancer(currCluster, loadBalanceWork);
-            std::cout << "Rack " << j << "\n";
+            //std::cout << "Rack " << j << "\n";
             LoadBalancer * currRack = ((LoadBalancer*)(currCluster->slave[j]));
-            int currShowBlobArr[serverStorage];
 
             for (int k = 0; k < serversPerRack; k++)
             {
-                std::cout << "Server" << k << "\n";
-
-                Server * serverTest = new Server(currRack, serverWork, serverStorage);
+                //std::cout << "Server" << k << "\n";
                 currRack->slave[k] = new Server(currRack, serverWork, serverStorage);
-
-                ((Server*)currRack->slave[j])->setShowBlobs(showBlobsArray);
+                ((Server*)currRack->slave[k])->setShowBlobs(showBlobs, (k+blobIter) % showBlobs);
             }
+            blobIter += serversPerRack;
         }
     }
+    std::cout << "WSC Initialization Completed...\n";
+
     return 0;
 }

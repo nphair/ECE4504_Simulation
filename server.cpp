@@ -1,4 +1,5 @@
 #include "server.hpp"
+#include <iostream>
 
 Server::Server(Destination * myMaster, int myWorkUnits, int myStorageAmt)
 {
@@ -17,7 +18,12 @@ void Server::update()
     }
 }
 
-void Server::setShowBlobs(int* shows)
+void Server::setShowBlobs(const int totalShows, int startPos)
 {
-    //showBlobs = shows;
+    for (int i = 0; i < storageAmt; i++)
+    {
+        showBlobs[i] = i+startPos;
+        //std::cout << i+startPos << " ";
+    }
+    std::cout << "\n";
 }

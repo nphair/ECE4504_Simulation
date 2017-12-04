@@ -8,8 +8,7 @@ public:
     int showBlobs[100];
     int storageAmt;
     void update() override;
-    void setShowBlobs(int*);
-
+    void setShowBlobs(const int, int);
 };
 
 
