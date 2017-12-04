@@ -48,15 +48,17 @@ int main(int argc, char *argv[])
             //Rack Level Load Balancers
             currCluster->slave[j] = new LoadBalancer(currCluster, loadBalanceWork);
             std::cout << "Rack " << j << "\n";
-            LoadBalancer * currRack = ((LoadBalancer*)(currCluster->slave[i]));
+            LoadBalancer * currRack = ((LoadBalancer*)(currCluster->slave[j]));
             int currShowBlobArr[serverStorage];
 
             for (int k = 0; k < serversPerRack; k++)
             {
                 std::cout << "Server" << k << "\n";
+
+                Server * serverTest = new Server(currRack, serverWork, serverStorage);
                 currRack->slave[k] = new Server(currRack, serverWork, serverStorage);
 
-                /*((Server*)currRack->slave[j])->setShowBlobs(showBlobsArray);*/
+                ((Server*)currRack->slave[j])->setShowBlobs(showBlobsArray);
             }
         }
     }
