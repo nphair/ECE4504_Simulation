@@ -1,7 +1,8 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
+#include "destination.hpp"
 
-class Server {
+class Server : public Destination {
 public:
     Server();
 

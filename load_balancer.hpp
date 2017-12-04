@@ -1,7 +1,9 @@
 #ifndef LOAD_BALANCER_HPP
 #define LOAD_BALANCER_HPP
 
-class LoadBalancer {
+#include "destination.hpp"
+
+class LoadBalancer: public Destination {
 public:
     LoadBalancer();
 
