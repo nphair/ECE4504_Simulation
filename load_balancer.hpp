@@ -7,7 +7,7 @@
 class LoadBalancer: public Destination {
 private:
     //If we switch this over to having main allocate them then we could just make these pointers to the Destination objects
-    std::map<int, Destination*> RoundLoadDict;
+    std::map<int,std::pair<int, Destination*>> roundLoadDict;
 
 public:
     LoadBalancer(Destination*, int);
@@ -15,6 +15,7 @@ public:
     Destination * slave[64];
     int totalRoundsTakenByReqs;
     int totalReqsCompleted;
+    void setShowBlobs(int);
 };
 
 
