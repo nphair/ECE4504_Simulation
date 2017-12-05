@@ -59,10 +59,12 @@ int main(int argc, char *argv[])
             {
                 //std::cout << "Server" << k << "\n";
                 currRack->slave[k] = new Server(currRack, serverWork, serverStorage);
-                ((Server*)currRack->slave[k])->setShowBlobs(showBlobs, (k+blobIter) % showBlobs);
+                ((Server*)currRack->slave[k])->setShowBlobs(showBlobs, (blobIter) % showBlobs);
+                blobIter += serverStorage;
             }
-            blobIter += serversPerRack;
+            currRack->setShowBlobs(5);
         }
+        currCluster->setShowBlobs(64);
     }
     std::cout << "WSC Initialization Completed.\n";
 
