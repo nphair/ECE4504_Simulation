@@ -17,6 +17,12 @@ void LoadBalancer::update()
     }
 
     int currRoundWorkUnits = workUnits;
+
+    //formulate the LoadRoundDict-ionary
+    for (int g = 0; g < 64; g++)
+    {
+    }
+
     while (currRoundWorkUnits > 0)
     {
         //Reroute requests to appropriate location, outgoing respones and incoming requests
@@ -25,7 +31,8 @@ void LoadBalancer::update()
         {
             for (int k = 0; k < 10; k++) //10 is the max number of showblobs we have in a single request! TODO
             {
-                //Determine which slave to give it to AKA formulate the LoadRoundDict-ionary
+                //Determine which slave to give it to based on Round Dict TODO
+
             }
         }
         else
