@@ -1,7 +1,7 @@
 #ifndef DESTINATION_HPP
 #define DESTINATION_HPP
-#include<deque>
-#include"Request.hpp"
+#include <deque>
+#include "request.hpp"
 
 class Destination {
 protected:
