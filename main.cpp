@@ -15,7 +15,8 @@ int main(int argc, char *argv[])
 {
     if (argc < 4)
     {
-        std::cout << "Not all proper variables included:\nExpected Input: SERVER_NUM SERVER_PER_RACK STORAGE_PER_SERVER(In Blobs)";
+        std::cout << "Not all proper variables included:\n"
+            "Expected Input: SERVER_NUM SERVER_PER_RACK STORAGE_PER_SERVER(In Blobs)" << std::endl;
         exit(0);
     }
 

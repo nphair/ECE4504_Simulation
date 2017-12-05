@@ -8,6 +8,10 @@ public:
     int storageAmt;
     void update() override;
     void setShowBlobs(const int, int);
+
+private:
+    bool process_request(Request * request);
+
 };
 
 #endif /* SERVER_HPP */

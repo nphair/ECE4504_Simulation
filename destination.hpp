@@ -9,13 +9,15 @@ protected:
     Destination * master;
     //The amount of work units that can be done
     int workUnits;
+    static const int SHOWS_PER_BLOB = 100;
 
 public:
     Destination();
     virtual void update() {};
     std::deque<Request*> requestQueue;
     int currLoad;
-    int showBlobs[100]; //100 is the total number of show blobs we have in the service TODO
+    int showBlobs[SHOWS_PER_BLOB];
+
 };
 
 #endif /* DESTINATION_HPP */

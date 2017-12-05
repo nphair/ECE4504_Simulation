@@ -4,13 +4,14 @@
 
 class Request {
 public:
-    Request(std::array<int, 10>); //10 is the max number of showblobs we have in a single request! TODO
-    //10 is arbitrarily chosen
-    //A request whose shows array is empty, is a response that has been satisfied
-    std::array<int, 10> shows; //10 is the max number of showblobs we have in a single request! TODO
-    //Will have to be iterated in main, so we will need a reference to all the requests currently in the system
+    // 10 is the max number of shows we have in a single request!
+    static const int SHOWS_PER_REQUEST = 10;
+    Request(std::array<int, SHOWS_PER_REQUEST>);
+    //A request whose shows array is empty, is a response that has been satisfied.
+    std::array<int, SHOWS_PER_REQUEST> shows;
     int roundCount;
     bool outgoing;
+
 };
 
 #endif /* REQUEST_HPP */
