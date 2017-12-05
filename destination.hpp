@@ -13,7 +13,9 @@ protected:
 public:
     Destination();
     virtual void update() {};
-    std::deque<Request> requestQueue;
+    std::deque<Request*> requestQueue;
+    int currLoad;
+    int showBlobs[100]; //100 is the total number of show blobs we have in the service TODO
 };
 
 #endif /* DESTINATION_HPP */

@@ -9,6 +9,7 @@
 #include <list>
 #include <numeric>
 #include <random>
+int initialize();
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +19,7 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    int serverNum = atoi(argv[1]);
+    int serverNum = atoi(argv[1]); //TODO actually use this number... TODO
     int serversPerRack = atoi(argv[2]);
     int serverStorage = atoi(argv[3]); //In Blobs
 
@@ -29,16 +30,20 @@ int main(int argc, char *argv[])
     int numRacksPerCluster = 64;
     //How do we distribute the ShowBlobs across the system?
     //How many showBlobs do we have? <-- requires knowing how much data in shows there are and then the minimum data in a server at its smallest storage size
-    const int showBlobs = 100;
+    const int showBlobs = 100;//100 is the total number of show blobs we have in the service TODO
     int blobIter = 0;
 
-    LoadBalancer * masterLoadBalancer = new LoadBalancer(NULL, loadBalanceWork);
+    std::cout << "# of Servers: " << serverNum << "\n";
+    std::cout << "# of Racks: " << numRacksPerCluster * numClusters << "\n";
+    std::cout << "# of Load Balancers: " << 1+numClusters << "\n";
+    std::cout << "# of Clusters: " << numClusters << "\n";
+
+
     std::cout << "WSC Initialization Started...\n";
+    LoadBalancer * masterLoadBalancer = new LoadBalancer(NULL, loadBalanceWork);
 
     for (int i = 0; i < numClusters; i++)
     {
-        //std::cout << "Cluster " << i << "\n";
-
         //Cluster Level LoadBalancers
         masterLoadBalancer->slave[i] = new LoadBalancer(masterLoadBalancer, loadBalanceWork);
         LoadBalancer * currCluster = ((LoadBalancer*)(masterLoadBalancer->slave[i]));
@@ -58,7 +63,13 @@ int main(int argc, char *argv[])
             blobIter += serversPerRack;
         }
     }
-    std::cout << "WSC Initialization Completed...\n";
+    std::cout << "WSC Initialization Completed.\n";
+
+    //Add our generated requests for the round to the back of the requestQueue of the masterLoadBalancerd
+    //Keep master list of all requests in the system (actual objects)
+    //Iterate every request roundCount in the master list by 1
+    //Call masterLoadBalancer.update()
+    //Loop again
 
     return 0;
 }

@@ -13,7 +13,8 @@ public:
     LoadBalancer(Destination*, int);
     void update() override;
     Destination * slave[64];
-
+    int totalRoundsTakenByReqs;
+    int totalReqsCompleted;
 };
 
 
