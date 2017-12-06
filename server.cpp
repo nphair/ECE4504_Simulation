@@ -7,15 +7,51 @@ Server::Server(Destination * myMaster, int myWorkUnits, int myStorageAmt)
     master = myMaster;
     storageAmt = myStorageAmt;
 }
-//how many racks per Cluster VS how many clusters in the system???? TODO
+
+/**
+ * Given a request determine if our server has all the shows in it.
+ * This operation costs ~1 work unit.
+ */
+bool Server::process_request(Request * request)
+{
+    bool all_shows_in_request_found = true;
+    auto sit = request->shows.begin();
+    while(sit != request->shows.end()) {
+        /* For each show in the request... */
+        for(int i = 0; i < SHOWS_PER_BLOB; i++) {
+            /* For each show the server has... */
+            if(showBlobs[i] == *sit) {
+                *sit = -1;
+                break;
+            }
+        }
+
+        // Server does not have 1 or more of the shows in the request.
+        if(*sit != -1) {
+            all_shows_in_request_found = false;
+        }
+        sit++;
+    }
+
+    return all_shows_in_request_found;
+}
+
+/**
+ *  Do as much work as possible in our allotted work units. Each
+ *  iteration costs 1 work unit with the bulk of that cost coming
+ *  from processing the request (process_request).
+ */
 void Server::update()
 {
     int currRoundWorkUnits = workUnits;
-    while (currRoundWorkUnits > 0)
-    {
-        //Satisfy a request currently in the queue
-        //If finish or doesn't contain the requested Blob, then add to master queue (Front <-- but this may change)
+    while (currRoundWorkUnits > 0 || requestQueue.empty()) {
+        Request * request = requestQueue.front();
+        request->outgoing = process_request(request);
+        master->requestQueue.push_front(request);
+        requestQueue.pop_front();
+        currRoundWorkUnits--;
     }
+
     currLoad = requestQueue.size();
 }
 
