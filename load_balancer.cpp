@@ -58,7 +58,6 @@ void LoadBalancer::update()
     int currRoundWorkUnits = workUnits;
 
     //Formulate the LoadRoundDict-ionary
-    bool found = false;
     //Looping thru every slave
     for (int g = 0; g < 64; g++)
     {
