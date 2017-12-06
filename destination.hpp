@@ -2,6 +2,7 @@
 #define DESTINATION_HPP
 #include <deque>
 #include "request.hpp"
+#include "globals.hpp"
 
 class Destination {
 protected:
@@ -9,14 +10,13 @@ protected:
     Destination * master;
     //The amount of work units that can be done
     int workUnits;
-    static const int SHOWS_PER_BLOB = 100;
 
 public:
     Destination();
     virtual void update() {};
     std::deque<Request*> requestQueue;
     int currLoad;
-    int showBlobs[SHOWS_PER_BLOB];
+    int showBlobs[NUM_SHOW_BLOBS];
 
 };
 

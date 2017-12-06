@@ -1,4 +1,5 @@
 #include "load_balancer.hpp"
+#include "globals.hpp"
 #include <algorithm>
 #include <iostream>
 
@@ -12,7 +13,7 @@ LoadBalancer::LoadBalancer(Destination * myMaster, int myWorkUnits)
 
 bool LoadBalancer::containsBlob(int potentialNum)
 {
-    for (int k = 0; k < 100; k++)
+    for (int k = 0; k < NUM_SHOW_BLOBS; k++)
     {
         if (showBlobs[k] == potentialNum)
         {
@@ -28,11 +29,11 @@ void LoadBalancer::setShowBlobs(int numSlaves)
     //loop thru every slave
     for (int slv = 0; slv < numSlaves; slv++)
     {
-        for (int slavNum = 0; slavNum < 100; slavNum++)
+        for (int slavNum = 0; slavNum < 8; slavNum++)
         {
             if (slave[slv]->showBlobs[slavNum] != -1 && !this->containsBlob(slave[slv]->showBlobs[slavNum]))
             {
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     if (showBlobs[i] == -1)
                     {
@@ -50,7 +51,7 @@ void LoadBalancer::setShowBlobs(int numSlaves)
 void LoadBalancer::update()
 {
     //Call the updates of all its slaves
-    for (int b = 0; b < 64; b++)
+    for (int b = 0; b < MAX_NUM_SLAVES; b++)
     {
         (slave[b])->update();
     }
@@ -59,13 +60,13 @@ void LoadBalancer::update()
 
     //Formulate the LoadRoundDict-ionary
     //Looping thru every slave
-    for (int g = 0; g < 64; g++)
+    for (int g = 0; g < MAX_NUM_SLAVES; g++)
     {
         //Looping thru every element in service blob library
-        for (int f = 0; f < 100; f++)
+        for (int f = 0; f < NUM_SHOW_BLOBS; f++)
         {
             //Looping thru every element in the showBlobs[] in the server
-            for(int i = 0; i < 100; i++)
+            for(int i = 0; i < 8; i++)
             {
                 //If server has this blob in its storage and its load is less than the current value stored in the dictionary
                 if(slave[g]->showBlobs[i] == f && slave[g]->currLoad < roundLoadDict[f].first)
@@ -83,7 +84,7 @@ void LoadBalancer::update()
         Request * currReq = requestQueue.front();
         if (!currReq->outgoing)
         {
-            for (int k = 0; k < 10; k++) //10 is the max number of showblobs we have in a single request! TODO
+            for (int k = 0; k < MAX_BLOB_ACCESSES_PER_REQUEST; k++)
             {
                 if (currReq->shows[k] != -1)
                 {
@@ -109,7 +110,7 @@ void LoadBalancer::update()
     }
 
     //Calculate currLoad
-    for (int m = 0; m < 64; m++)
+    for (int m = 0; m < MAX_NUM_SLAVES; m++)
     {
         currLoad += slave[m]->requestQueue.size();
     }

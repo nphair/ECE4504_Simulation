@@ -3,6 +3,7 @@
 
 #include "destination.hpp"
 #include <map>
+#include "globals.hpp"
 
 class LoadBalancer: public Destination {
 private:
@@ -13,7 +14,7 @@ private:
 public:
     LoadBalancer(Destination*, int);
     void update() override;
-    Destination * slave[64];
+    Destination * slave[MAX_NUM_SLAVES];
     int totalRoundsTakenByReqs;
     int totalReqsCompleted;
     void setShowBlobs(int);
