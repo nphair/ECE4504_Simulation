@@ -10,41 +10,40 @@ LoadBalancer::LoadBalancer(Destination * myMaster, int myWorkUnits)
     totalReqsCompleted = 0;
 }
 
+bool LoadBalancer::containsBlob(int potentialNum)
+{
+    for (int k = 0; k < 100; k++)
+    {
+        if (showBlobs[k] == potentialNum)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void LoadBalancer::setShowBlobs(int numSlaves)
 {
 
     //loop thru every slave
     for (int slv = 0; slv < numSlaves; slv++)
     {
-        //loop thru every element in ShowBlobs in each slave
-        for (int slvB = 0; slvB < 100; slvB++)
+        for (int slavNum = 0; slavNum < 100; slavNum++)
         {
-            bool found = false;
-            //Compare each element in ShowBlobs of the slaves to every element of show Blobs in the loadBalancer
-            for (int lbB = 0; lbB < 100; lbB++)
+            if (slave[slv]->showBlobs[slavNum] != -1 && !this->containsBlob(slave[slv]->showBlobs[slavNum]))
             {
-                (slave[slv])->showBlobs[slvB] == showBlobs[lbB];
-
-                //Found showBlobs of the LoadBalancer
-                if ((slave[slv])->showBlobs[slvB] == showBlobs[lbB])
+                for (int i = 0; i < 100; i++)
                 {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
-                for (int v = 0; v < 100; v++)
-                {
-                    if (showBlobs[v] == -1)
+                    if (showBlobs[i] == -1)
                     {
-                        showBlobs[v] = (slave[slv])->showBlobs[slvB];
+                        showBlobs[i] = slave[slv]->showBlobs[slavNum];
+                        break;
                     }
                 }
             }
-
         }
     }
+
 
 }
 
@@ -66,7 +65,7 @@ void LoadBalancer::update()
         //Looping thru every element in service blob library
         for (int f = 0; f < 100; f++)
         {
-            //Looping thry every element in the showBlobs[] in the server
+            //Looping thru every element in the showBlobs[] in the server
             for(int i = 0; i < 100; i++)
             {
                 //If server has this blob in its storage and its load is less than the current value stored in the dictionary
@@ -79,8 +78,6 @@ void LoadBalancer::update()
         }
     }
 
-
-
     while (currRoundWorkUnits > 0)
     {
         //Reroute requests to appropriate location, outgoing respones and incoming requests
@@ -89,8 +86,12 @@ void LoadBalancer::update()
         {
             for (int k = 0; k < 10; k++) //10 is the max number of showblobs we have in a single request! TODO
             {
-                //Determine which slave to give it to based on Round Dict TODO
-
+                if (currReq->shows[k] != -1)
+                {
+                    requestQueue.pop_front();
+                    roundLoadDict[currReq->shows[k]].second->requestQueue.push_back(currReq);
+                    currRoundWorkUnits--;
+                }
             }
         }
         else
@@ -99,7 +100,7 @@ void LoadBalancer::update()
             {
                 master->requestQueue.push_front(currReq);
             }
-            else //The current load balancer is the masterLoadBalancer
+            else //The current load balancer is the masterLoadBalancer, Maybe useful if we want MasterLoadBalancer to track average time per request
             {
                 totalRoundsTakenByReqs += currReq->roundCount;
                 totalReqsCompleted++;
