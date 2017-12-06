@@ -11,12 +11,18 @@
 #include <random>
 int initialize();
 
+
+
 int main(int argc, char *argv[])
 {
     if (argc < 4)
     {
-        std::cout << "Not all proper variables included:\n"
-            "Expected Input: SERVER_NUM SERVER_PER_RACK STORAGE_PER_SERVER(In Blobs)" << std::endl;
+        std::cerr
+            << "usage: " << argv[0] << " server_number servers_per_rack storage_per_server\n"
+            << "\tserver_number:      the amount of servers to run the simulation with.\n"
+            << "\tservers_per_rack:   the amount of servers each rack contains.\n"
+            << "\tstorage_per_server: the number of 'blobs' each server will hold."
+            << std::endl;
         exit(0);
     }
 
