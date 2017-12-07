@@ -36,6 +36,10 @@ int main(int argc, char *argv[])
     std::cout << "# of Load Balancers: " << 1+numClusters << "\n";
     std::cout << "# of Clusters: " << numClusters << "\n";
 
+    double roundsPerRequest = masterLoadBalancer->totalRoundsTakenByReqs / masterLoadBalancer->totalReqsCompleted;
+    std::cout << "Average Time per Request: " << roundsPerRequest * 0.001 << "\n";
+    double totalCost = (serverNum * SERVER_COST) + ((MAX_NUM_SLAVES * numClusters) * RACK_COST) + (serverNum * serverStorage * STORAGE_BLOB_COST) + (LB_COST * (1 + numClusters));
+    std::cout << "Total Cost: " << totalCost << "\n";
 
     std::cout << "WSC Initialization Started...\n";
     LoadBalancer * masterLoadBalancer = new LoadBalancer(NULL);
@@ -78,11 +82,6 @@ int main(int argc, char *argv[])
     //Iterate every request roundCount in the master list by 1
     //Call masterLoadBalancer.update()
     //Loop again
-
-    double roundsPerRequest = masterLoadBalancer->totalRoundsTakenByReqs / masterLoadBalancer->totalReqsCompleted;
-    std::cout << "Average Time per Request: " << roundsPerRequest * 0.001 << "\n";
-    double totalCost = (serverNum * SERVER_COST) + ((MAX_NUM_SLAVES * numClusters) * RACK_COST) + (serverNum * serverStorage * STORAGE_BLOB_COST) + (LB_COST * (1 + numClusters));
-    std::cout << "Total Cost: " << totalCost << "\n";
 
     return 0;
 }
