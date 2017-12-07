@@ -85,7 +85,7 @@ void LoadBalancer::update()
                 if (currReq->shows[k] != -1)
                 {
 
-                    auto bar = roundLoadDict[currReq->shows[k]].second->requestQueue;
+                    roundLoadDict[currReq->shows[k]].second->requestQueue.push_back(currReq);
                     requestQueue.pop_front();
                     currRoundWorkUnits--;
                     /*std::cout << "Request_Sent" << requestQueue.size() << " " << currRoundWorkUnits << "\n";
