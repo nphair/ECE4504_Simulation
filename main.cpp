@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     const int serverStorage = atoi(argv[3]); //In Blobs
 
     //We are keeping number of racks per cluster always the same at 64
-    const int numClusters = 1 + serverNum / (serversPerRack * MAX_NUM_SLAVES);
+    const int numClusters = serverNum / (serversPerRack * MAX_NUM_SLAVES);
     int blobIter = 0;
 
     std::cout << "# of Servers: " << serverNum << "\n";

@@ -37,8 +37,7 @@ void LoadBalancer::setShowBlobs(int numSlaves, bool test)
             }
             if (slave[slv]->showBlobs[slavNum] != -1 && !this->containsBlob(slave[slv]->showBlobs[slavNum]))
             {
-
-                        showBlobs[slave[slv]->showBlobs[slavNum]] = slave[slv]->showBlobs[slavNum];
+                    showBlobs[slave[slv]->showBlobs[slavNum]] = slave[slv]->showBlobs[slavNum];
             }
         }
     }
@@ -46,16 +45,15 @@ void LoadBalancer::setShowBlobs(int numSlaves, bool test)
 
 void LoadBalancer::update()
 {
+        //roundLoadDict.clear();
+
+
+
     //Call the updates of all its slaves
     for (int b = 0; b < slave.size(); b++)
     {
         (slave[b])->update();
     }
-    /*if (slave.size() == 32)
-    {
-        std::cout <<"master\n";
-        std::cout << "LB requestQueue length: " << requestQueue.size() << "\n";
-    }*/
 
     int currRoundWorkUnits = LOAD_BALANCE_WORK;
     if (master == NULL)
@@ -63,7 +61,7 @@ void LoadBalancer::update()
         currRoundWorkUnits = 1500;
     }
 
-    for (int s = 0; s < slave.size(); s++)
+    for (int s = 0; s < slave.size(); s++ && requestQueue.size() > 0)
     {
         for (int j = 0; j < NUM_SHOW_BLOBS; j++)
         {
@@ -71,29 +69,36 @@ void LoadBalancer::update()
             {
                 roundLoadDict[slave[s]->showBlobs[j]].first = slave[s]->currLoad;
                 roundLoadDict[slave[s]->showBlobs[j]].second = slave[s];
+                //std::cout << roundLoadDict[slave[s]->showBlobs[j]].first << "\n";
             }
         }
     }
+
     while (currRoundWorkUnits > 0 && !requestQueue.empty())
     {
+
         //Reroute requests to appropriate location, outgoing respones and incoming requests
         Request * currReq = requestQueue.front();
         if (!currReq->outgoing)
         {
             for (int k = 0; k < MAX_BLOB_ACCESSES_PER_REQUEST; k++)
             {
-                if (currReq->shows[k] != -1)
+                if (currReq->shows[k] != -1 && this->containsBlob(currReq->shows[k]))
                 {
+                    //std::cout << currReq->shows[k] << "\n";
+                    auto target_blob = currReq->shows[k];
+                    auto target_load_dest_pair = roundLoadDict[target_blob];
+                    auto target_dest = target_load_dest_pair.second;
+                    auto target_dest_queue = target_dest->requestQueue;
 
                     roundLoadDict[currReq->shows[k]].second->requestQueue.push_back(currReq);
                     requestQueue.pop_front();
                     currRoundWorkUnits--;
-                    /*std::cout << "Request_Sent" << requestQueue.size() << " " << currRoundWorkUnits << "\n";
-                    if (requestQueue.size() == 1099)
-                    {
-                        std::cout << "STOP\n";
-                    }*/
                     break;
+                }
+                else
+                {
+                    master->requestQueue.push_front(currReq);
                 }
             }
         }
@@ -110,6 +115,7 @@ void LoadBalancer::update()
             }
             requestQueue.pop_front();
         }
+        std::cout << currRoundWorkUnits << " work done\n";
     }
 
     //Calculate currLoad
