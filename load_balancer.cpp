@@ -75,7 +75,7 @@ void LoadBalancer::update()
         }
     }
 
-    while (currRoundWorkUnits > 0)
+    while (currRoundWorkUnits > 0 && !requestQueue.empty())
     {
         //Reroute requests to appropriate location, outgoing respones and incoming requests
         Request * currReq = requestQueue.front();
