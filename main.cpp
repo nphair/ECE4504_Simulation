@@ -109,7 +109,7 @@ Request * requestGen(LoadBalancer * master, std::vector<Request*> requestList, c
         //Broswer Request
         if (rand() % 100 <= 7)
         {
-            int numBlobs = rand() % (MAX_BLOB_ACCESSES_PER_REQUEST + 1);
+            int numBlobs = 1 + (rand() % MAX_BLOB_ACCESSES_PER_REQUEST);
             for (int n = 0; n < numBlobs; n++)
             {
                 requestedBlobs[n] = rand() % NUM_SHOW_BLOBS;
@@ -117,7 +117,7 @@ Request * requestGen(LoadBalancer * master, std::vector<Request*> requestList, c
         }
         else //Show Request
         {
-            requestedBlobs[0] = 1 + (rand() % (NUM_SHOW_BLOBS - 1));
+            requestedBlobs[0] = rand() % NUM_SHOW_BLOBS;
         }
         newRequests[currReq] = new Request(requestedBlobs);
         master->requestQueue.push_back(newRequests[currReq]);

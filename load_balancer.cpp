@@ -51,8 +51,17 @@ void LoadBalancer::update()
     {
         (slave[b])->update();
     }
+    /*if (slave.size() == 32)
+    {
+        std::cout <<"master\n";
+        std::cout << "LB requestQueue length: " << requestQueue.size() << "\n";
+    }*/
 
     int currRoundWorkUnits = LOAD_BALANCE_WORK;
+    if (master == NULL)
+    {
+        currRoundWorkUnits = 1500;
+    }
 
     for (int s = 0; s < slave.size(); s++)
     {
@@ -65,7 +74,6 @@ void LoadBalancer::update()
             }
         }
     }
-
     while (currRoundWorkUnits > 0 && !requestQueue.empty())
     {
         //Reroute requests to appropriate location, outgoing respones and incoming requests
@@ -76,14 +84,15 @@ void LoadBalancer::update()
             {
                 if (currReq->shows[k] != -1)
                 {
+
+                    auto bar = roundLoadDict[currReq->shows[k]].second->requestQueue;
                     requestQueue.pop_front();
-                    auto foo = currReq->shows[k];
-                    auto bar = roundLoadDict[foo];
-                    auto fred = bar.second;
-                    auto lafs = fred->requestQueue;
-                    lafs.push_back(currReq);
-                    //roundLoadDict[currReq->shows[k]].second->requestQueue.push_back(currReq);
                     currRoundWorkUnits--;
+                    /*std::cout << "Request_Sent" << requestQueue.size() << " " << currRoundWorkUnits << "\n";
+                    if (requestQueue.size() == 1099)
+                    {
+                        std::cout << "STOP\n";
+                    }*/
                     break;
                 }
             }
