@@ -12,7 +12,7 @@ private:
     bool containsBlob(int);
 
 public:
-    LoadBalancer(Destination*, int);
+    LoadBalancer(Destination*);
     void update() override;
     Destination * slave[MAX_NUM_SLAVES];
     int totalRoundsTakenByReqs;

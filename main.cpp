@@ -13,14 +13,14 @@ int main(int argc, char *argv[])
             << std::endl;
         exit(0);
     }
-    else if (atoi(argv[3]) != 1 || atoi(argv[3]) != 2 || atoi(argv[3]) != 4 || atoi(argv[3]) != 8)
+    else if (atoi(argv[3]) != 1 && atoi(argv[3]) != 2 && atoi(argv[3]) != 4 && atoi(argv[3]) != 8)
     {
         std::cerr << "Number of Blobs must be of the set {1, 2, 4, 8, 16}";
         exit(0);
     }
     else if (atoi(argv[2]) > 46)
     {
-        std::cerr << "A Rack can hold at most 46 server (48 slots, 2 network devices)";
+        std::cerr << "A Rack can hold at most 46 (48 slots, 2 network devices)";
         exit(0);
     }
     const int serverNum = atoi(argv[1]);
@@ -38,17 +38,17 @@ int main(int argc, char *argv[])
 
 
     std::cout << "WSC Initialization Started...\n";
-    LoadBalancer * masterLoadBalancer = new LoadBalancer(NULL, LOAD_BALANCE_WORK);
+    LoadBalancer * masterLoadBalancer = new LoadBalancer(NULL);
 
     for (int i = 0; i < numClusters; i++)
     {
         //Cluster Level LoadBalancers
-        masterLoadBalancer->slave[i] = new LoadBalancer(masterLoadBalancer, LOAD_BALANCE_WORK);
+        masterLoadBalancer->slave[i] = new LoadBalancer(masterLoadBalancer);
         LoadBalancer * currCluster = ((LoadBalancer*)(masterLoadBalancer->slave[i]));
         for (int j = 0; j < MAX_NUM_SLAVES; j++)
         {
             //Rack Level Load Balancers
-            currCluster->slave[j] = new LoadBalancer(currCluster, LOAD_BALANCE_WORK);
+            currCluster->slave[j] = new LoadBalancer(currCluster);
             LoadBalancer * currRack = ((LoadBalancer*)(currCluster->slave[j]));
 
             for (int k = 0; k < serversPerRack; k++)
@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
                 blobIter += serverStorage;
             }
             currRack->setShowBlobs(serversPerRack);
-
         }
         currCluster->setShowBlobs(MAX_NUM_SLAVES);
     }

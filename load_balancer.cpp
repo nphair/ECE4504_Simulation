@@ -3,9 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
-LoadBalancer::LoadBalancer(Destination * myMaster, int myWorkUnits)
+LoadBalancer::LoadBalancer(Destination * myMaster)
 {
-    workUnits = myWorkUnits;
     master = myMaster;
     totalRoundsTakenByReqs = 0;
     totalReqsCompleted = 0;
@@ -44,8 +43,6 @@ void LoadBalancer::setShowBlobs(int numSlaves)
             }
         }
     }
-
-
 }
 
 void LoadBalancer::update()
@@ -56,7 +53,7 @@ void LoadBalancer::update()
         (slave[b])->update();
     }
 
-    int currRoundWorkUnits = workUnits;
+    int currRoundWorkUnits = LOAD_BALANCE_WORK;
 
     //Formulate the LoadRoundDict-ionary
     //Looping thru every slave
@@ -91,6 +88,7 @@ void LoadBalancer::update()
                     requestQueue.pop_front();
                     roundLoadDict[currReq->shows[k]].second->requestQueue.push_back(currReq);
                     currRoundWorkUnits--;
+                    break;
                 }
             }
         }
