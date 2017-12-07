@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
     {
         std::cerr
             << "usage: " << argv[0] << " server_number servers_per_rack storage_per_server\n"
-            << "\tserver_number:      the amount of servers to run the simulation with.\n"
-            << "\tservers_per_rack:   the amount of servers each rack contains.\n"
+            << "\tserver_number:      the number of servers to run the simulation with.\n"
+            << "\tservers_per_rack:   the number of servers each rack contains.\n"
             << "\tstorage_per_server: the number of 'blobs' each server will hold."
             << std::endl;
         exit(0);
