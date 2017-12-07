@@ -112,11 +112,6 @@ Request * requestGen(LoadBalancer * master, std::vector<Request*> requestList, c
         {
             requestedBlobs[0] = 1 + (rand() % (NUM_SHOW_BLOBS - 1));
         }
-        /*
-        for(int i = 0; i < 10; i++) {
-            std::cout << requestedBlobs[i] << ", ";
-        }
-        */
         newRequests[currReq] = new Request(requestedBlobs);
         master->requestQueue.push_back(newRequests[currReq]);
         requestList.push_back(newRequests[currReq]);

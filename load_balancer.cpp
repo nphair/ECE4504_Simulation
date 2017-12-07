@@ -24,15 +24,14 @@ bool LoadBalancer::containsBlob(int potentialNum)
 
 void LoadBalancer::setShowBlobs(int numSlaves)
 {
-
     //loop thru every slave
     for (int slv = 0; slv < numSlaves; slv++)
     {
-        for (int slavNum = 0; slavNum < 8; slavNum++)
+        for (int slavNum = 0; slavNum < MAX_SERVER_STORAGE; slavNum++)
         {
             if (slave[slv]->showBlobs[slavNum] != -1 && !this->containsBlob(slave[slv]->showBlobs[slavNum]))
             {
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < MAX_SERVER_STORAGE; i++)
                 {
                     if (showBlobs[i] == -1)
                     {
@@ -48,37 +47,30 @@ void LoadBalancer::setShowBlobs(int numSlaves)
 void LoadBalancer::update()
 {
     //Call the updates of all its slaves
-    //auto __size = sizeof(slave)/sizeof(slave[0]);
-    //std::cout << __size << std::endl;
-    //for (int b = 0; b < MAX_NUM_SLAVES; b++)
     for (int b = 0; b < slave.size(); b++)
     {
-        //std::cout << b << std::endl;
         (slave[b])->update();
     }
 
     int currRoundWorkUnits = LOAD_BALANCE_WORK;
 
-    //Formulate the LoadRoundDict-ionary
-    //Looping thru every slave
-    //jfor (int g = 0; g < MAX_NUM_SLAVES; g++)
-    for (int g = 0; g < slave.size(); g++)
+    for (int s = 0; s < slave.size(); s++)
     {
-        //Looping thru every element in service blob library
-        for (int f = 0; f < NUM_SHOW_BLOBS; f++)
+        for (int j = 0; j < NUM_SHOW_BLOBS; j++)
         {
-            //Looping thru every element in the showBlobs[] in the server
-            for(int i = 0; i < 8; i++)
+            if (slave[s]->currLoad <= roundLoadDict[slave[s]->showBlobs[j]].first)
             {
-                //If server has this blob in its storage and its load is less than the current value stored in the dictionary
-                if(slave[g]->showBlobs[i] == f && slave[g]->currLoad < roundLoadDict[f].first)
-                {
-                    roundLoadDict[f].first = slave[g]->currLoad;
-                    roundLoadDict[f].second = slave[g];
-                }
+                roundLoadDict[slave[s]->showBlobs[j]].first = slave[s]->currLoad;
+                roundLoadDict[slave[s]->showBlobs[j]].second = slave[s];
             }
         }
     }
+
+    for (int x = 0; x < NUM_SHOW_BLOBS; x++)
+    {
+        std::cout << x << " " << roundLoadDict[x].second << "\n";
+    }
+
 
     while (currRoundWorkUnits > 0 && !requestQueue.empty())
     {
