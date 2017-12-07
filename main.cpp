@@ -7,15 +7,14 @@ int main(int argc, char *argv[])
     {
         std::cerr
             << "usage: " << argv[0] << " server_number servers_per_rack storage_per_server\n"
-            << "\tserver_number:      the number of servers to run the simulation with.\n"
-            << "\tservers_per_rack:   the number of servers each rack contains.\n"
-            << "\tstorage_per_server: the number of 'blobs' each server will hold."
-            << std::endl;
+            << "\tserver_number:      the amount of servers to run the simulation with.\n"
+            << "\tservers_per_rack:   the amount of servers each rack contains.\n"
+            << "\tstorage_per_server: the number of 'blobs' each server will hold. Each Blob is 2 TB" << std::endl;
         exit(0);
     }
     else if (atoi(argv[3]) != 1 && atoi(argv[3]) != 2 && atoi(argv[3]) != 4 && atoi(argv[3]) != 8)
     {
-        std::cerr << "Number of Blobs must be of the set {1, 2, 4, 8, 16}";
+        std::cerr << "Number of Blobs must be of the set {1, 2, 4, 8}";
         exit(0);
     }
     else if (atoi(argv[2]) > 46)
@@ -36,6 +35,10 @@ int main(int argc, char *argv[])
     std::cout << "# of Load Balancers: " << 1+numClusters << "\n";
     std::cout << "# of Clusters: " << numClusters << "\n";
 
+    double roundsPerRequest = masterLoadBalancer->totalRoundsTakenByReqs / masterLoadBalancer->totalReqsCompleted;
+    std::cout << "Average Time per Request: " << roundsPerRequest * 0.001 << "\n";
+    double totalCost = (serverNum * SERVER_COST) + ((MAX_NUM_SLAVES * numClusters) * RACK_COST) + (serverNum * serverStorage * STORAGE_BLOB_COST) + (LB_COST * (1 + numClusters));
+    std::cout << "Total Cost: " << totalCost << "\n";
 
 
     std::cout << "WSC Initialization Started...\n";
