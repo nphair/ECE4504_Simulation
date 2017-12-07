@@ -1,5 +1,7 @@
 #include "main.hpp"
 #include "globals.hpp"
+#include <iomanip>
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
@@ -12,9 +14,9 @@ int main(int argc, char *argv[])
             << "\tstorage_per_server: the number of 'blobs' each server will hold. Each Blob is 2 TB" << std::endl;
         exit(0);
     }
-    else if (atoi(argv[3]) != 1 && atoi(argv[3]) != 2 && atoi(argv[3]) != 4 && atoi(argv[3]) != 8)
+    else if (atoi(argv[3]) < 1 || atoi(argv[3]) > 8)
     {
-        std::cerr << "Number of Blobs must be of the set {1, 2, 4, 8}";
+        std::cerr << "Number of Blobs must be of the set {1 - 8}";
         exit(0);
     }
     else if (atoi(argv[2]) > 46)
@@ -73,29 +75,24 @@ int main(int argc, char *argv[])
     for (int currRnds = 0; currRnds < TOTAL_ROUNDS; currRnds++)
     {
         requestGen(masterLoadBalancer, requestMasterList, NUM_REQUESTS_GENERATED);
-
-        /*for (int t = 0; t < requestMasterList.size(); t++)
-        {
-            requestMasterList[t]->roundCount++;
-        }*/
         masterLoadBalancer->update();
-        std::cout << "Update Round #" << currRnds << "\n";
-    }
-    //Add our generated requests for the round to the back of the requestQueue of the masterLoadBalancerd
-    //Keep master list of all requests in the system (actual objects)
-    //Iterate every request roundCount in the master list by 1
-    //Call masterLoadBalancer.update()
-    //Loop again
+        std::cout << ". ";
 
-    std::cout << "Total Rounds Run: " << masterLoadBalancer->totalRoundsTakenByReqs << "\n";
+    }
+
+    std::cout << "\nTotal Rounds Run: " << masterLoadBalancer->totalRoundsTakenByReqs << "\n";
     std::cout << "Total Requests Completed: " << masterLoadBalancer->totalReqsCompleted << "\n";
 
     if ( masterLoadBalancer->totalReqsCompleted > 0)
     {
-        double roundsPerRequest = masterLoadBalancer->totalRoundsTakenByReqs / masterLoadBalancer->totalReqsCompleted;
-        std::cout << "Average Time per Request: " << roundsPerRequest * 0.001 << "\n";
+        float rounds = masterLoadBalancer->totalRoundsTakenByReqs;
+        float reqs = masterLoadBalancer->totalReqsCompleted;
+        float roundsPerRequest = rounds / reqs ;
+
+        std::cout << "Average Time per Request (milliseconds): " << roundsPerRequest << "\n";
         double totalCost = (serverNum * SERVER_COST) + ((MAX_NUM_SLAVES * numClusters) * RACK_COST) + (serverNum * serverStorage * STORAGE_BLOB_COST) + (LB_COST * (1 + numClusters));
-        std::cout << "Total Cost: " << totalCost << "\n";
+        std::cout << "Total Cost ($Millions): " << totalCost / 1000000<< "\n";
+        usleep(200);
     }
     return 0;
 }
