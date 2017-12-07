@@ -16,8 +16,13 @@ int main(int argc, char *argv[])
     else if (atoi(argv[3]) != 1 || atoi(argv[3]) != 2 || atoi(argv[3]) != 4 || atoi(argv[3]) != 8)
     {
         std::cerr << "Number of Blobs must be of the set {1, 2, 4, 8, 16}";
+        exit(0);
     }
-
+    else if (atoi(argv[2]) > 46)
+    {
+        std::cerr << "A Rack can hold at most 46 server (48 slots, 2 network devices)";
+        exit(0);
+    }
     const int serverNum = atoi(argv[1]);
     const int serversPerRack = atoi(argv[2]);
     const int serverStorage = atoi(argv[3]); //In Blobs
