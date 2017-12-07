@@ -43,14 +43,20 @@ bool Server::process_request(Request * request)
  */
 void Server::update()
 {
+    std::cout << "enter update" << std::endl;
     int currRoundWorkUnits = workUnits;
     while (currRoundWorkUnits > 0 && !requestQueue.empty()) {
+        std::cout << "enter loop" << std::endl;
         Request * request = requestQueue.front();
+        std::cout << "after front" << std::endl;
         request->outgoing = process_request(request);
         master->requestQueue.push_front(request);
+        std::cout << "b4" << std::endl;
         requestQueue.pop_front();
+        std::cout << "after" << std::endl;
         currRoundWorkUnits--;
     }
+    std::cout << "done update" << std::endl;
 
     currLoad = requestQueue.size();
 }

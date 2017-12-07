@@ -9,8 +9,7 @@ int main(int argc, char *argv[])
             << "usage: " << argv[0] << " server_number servers_per_rack storage_per_server\n"
             << "\tserver_number:      the amount of servers to run the simulation with.\n"
             << "\tservers_per_rack:   the amount of servers each rack contains.\n"
-            << "\tstorage_per_server: the number of 'blobs' each server will hold. Each Blob is 2 TB"
-            << std::endl;
+            << "\tstorage_per_server: the number of 'blobs' each server will hold. Each Blob is 2 TB" << std::endl;
         exit(0);
     }
     else if (atoi(argv[3]) != 1 && atoi(argv[3]) != 2 && atoi(argv[3]) != 4 && atoi(argv[3]) != 8)
