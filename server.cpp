@@ -43,12 +43,14 @@ bool Server::process_request(Request * request)
  */
 void Server::update()
 {
+
     int currRoundWorkUnits = workUnits;
-    //std::cout << requestQueue.size() << "\n";
+    /*if (requestQueue.size() > 0)
+        std::cout << "Request Queue length: " << requestQueue.size() << "\n";*/
     while (currRoundWorkUnits > 0 && !requestQueue.empty()) {
         Request * request = requestQueue.front();
         request->outgoing = process_request(request);
-        std::cout << "Outgoing " << request->outgoing << "\n";
+        //std::cout << "Outgoing " << request->outgoing << "\n";
         request->roundCount++;
         master->requestQueue.push_front(request);
         requestQueue.pop_front();
