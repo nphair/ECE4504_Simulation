@@ -2,5 +2,5 @@
 
 Destination::Destination()
 {
-    std::fill_n(showBlobs, 100, -1);
+    std::fill_n(showBlobs, NUM_SHOW_BLOBS, -1);
 }

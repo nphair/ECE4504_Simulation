@@ -18,7 +18,7 @@ bool Server::process_request(Request * request)
     auto sit = request->shows.begin();
     while(sit != request->shows.end()) {
         /* For each show in the request... */
-        for(int i = 0; i < SHOWS_PER_BLOB; i++) {
+        for(int i = 0; i < NUM_SHOW_BLOBS; i++) {
             /* For each show the server has... */
             if(showBlobs[i] == *sit) {
                 *sit = -1;
