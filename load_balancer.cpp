@@ -48,8 +48,12 @@ void LoadBalancer::setShowBlobs(int numSlaves)
 void LoadBalancer::update()
 {
     //Call the updates of all its slaves
-    for (int b = 0; b < MAX_NUM_SLAVES; b++)
+    //auto __size = sizeof(slave)/sizeof(slave[0]);
+    //std::cout << __size << std::endl;
+    //for (int b = 0; b < MAX_NUM_SLAVES; b++)
+    for (int b = 0; b < slave.size(); b++)
     {
+        //std::cout << b << std::endl;
         (slave[b])->update();
     }
 
@@ -57,7 +61,8 @@ void LoadBalancer::update()
 
     //Formulate the LoadRoundDict-ionary
     //Looping thru every slave
-    for (int g = 0; g < MAX_NUM_SLAVES; g++)
+    //jfor (int g = 0; g < MAX_NUM_SLAVES; g++)
+    for (int g = 0; g < slave.size(); g++)
     {
         //Looping thru every element in service blob library
         for (int f = 0; f < NUM_SHOW_BLOBS; f++)
@@ -86,7 +91,12 @@ void LoadBalancer::update()
                 if (currReq->shows[k] != -1)
                 {
                     requestQueue.pop_front();
-                    roundLoadDict[currReq->shows[k]].second->requestQueue.push_back(currReq);
+                    auto foo = currReq->shows[k];
+                    auto bar = roundLoadDict[foo];
+                    auto fred = bar.second;
+                    auto lafs = fred->requestQueue;
+                    lafs.push_back(currReq);
+                    //roundLoadDict[currReq->shows[k]].second->requestQueue.push_back(currReq);
                     currRoundWorkUnits--;
                     break;
                 }
@@ -108,7 +118,8 @@ void LoadBalancer::update()
     }
 
     //Calculate currLoad
-    for (int m = 0; m < MAX_NUM_SLAVES; m++)
+    //for (int m = 0; m < MAX_NUM_SLAVES; m++)
+    for (int m = 0; m < slave.size(); m++)
     {
         currLoad += slave[m]->requestQueue.size();
     }

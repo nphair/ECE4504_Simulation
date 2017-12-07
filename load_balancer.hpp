@@ -4,6 +4,7 @@
 #include "destination.hpp"
 #include <map>
 #include "globals.hpp"
+#include <vector>
 
 class LoadBalancer: public Destination {
 private:
@@ -14,7 +15,8 @@ private:
 public:
     LoadBalancer(Destination*);
     void update() override;
-    Destination * slave[MAX_NUM_SLAVES];
+    //Destination * slave[MAX_NUM_SLAVES];
+    std::vector<Destination *> slave;
     int totalRoundsTakenByReqs;
     int totalReqsCompleted;
     void setShowBlobs(int);

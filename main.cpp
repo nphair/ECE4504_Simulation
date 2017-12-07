@@ -37,24 +37,32 @@ int main(int argc, char *argv[])
     std::cout << "# of Clusters: " << numClusters << "\n";
 
 
+
     std::cout << "WSC Initialization Started...\n";
     LoadBalancer * masterLoadBalancer = new LoadBalancer(NULL);
 
     for (int i = 0; i < numClusters; i++)
     {
         //Cluster Level LoadBalancers
-        masterLoadBalancer->slave[i] = new LoadBalancer(masterLoadBalancer);
+        LoadBalancer * clusterLoadBalancer = new LoadBalancer(masterLoadBalancer);
+        masterLoadBalancer->slave.push_back(clusterLoadBalancer);
         LoadBalancer * currCluster = ((LoadBalancer*)(masterLoadBalancer->slave[i]));
         for (int j = 0; j < MAX_NUM_SLAVES; j++)
         {
             //Rack Level Load Balancers
-            currCluster->slave[j] = new LoadBalancer(currCluster);
-            LoadBalancer * currRack = ((LoadBalancer*)(currCluster->slave[j]));
+            //currCluster->slave[j] = new LoadBalancer(currCluster);
+            //LoadBalancer * currRack = ((LoadBalancer*)(currCluster->slave[j]));
+            LoadBalancer * currRack = new LoadBalancer(currCluster);
+            currCluster->slave.push_back(currRack);
+
 
             for (int k = 0; k < serversPerRack; k++)
             {
-                currRack->slave[k] = new Server(currRack, SERVER_WORK, serverStorage);
-                ((Server*)currRack->slave[k])->setShowBlobs(NUM_SHOW_BLOBS, (blobIter) % NUM_SHOW_BLOBS);
+                //currRack->slave[k] = new Server(currRack, SERVER_WORK, serverStorage);
+                Server * s = new Server(currRack, SERVER_WORK, serverStorage);
+                s->setShowBlobs(NUM_SHOW_BLOBS, (blobIter) % NUM_SHOW_BLOBS);
+                currRack->slave.push_back(s);
+                //((Server*)currRack->slave[k])->setShowBlobs(NUM_SHOW_BLOBS, (blobIter) % NUM_SHOW_BLOBS);
                 blobIter += serverStorage;
             }
             currRack->setShowBlobs(serversPerRack);
@@ -88,6 +96,7 @@ Request * requestGen(LoadBalancer * master, std::vector<Request*> requestList, c
     for (int currReq = 0; currReq < numReqs; currReq++)
     {
         std::array<int, MAX_BLOB_ACCESSES_PER_REQUEST> requestedBlobs;
+        requestedBlobs.fill(-1);
         //Broswer Request
         if (rand() % 100 <= 7)
         {
@@ -99,8 +108,13 @@ Request * requestGen(LoadBalancer * master, std::vector<Request*> requestList, c
         }
         else //Show Request
         {
-            requestedBlobs[0] = rand() % NUM_SHOW_BLOBS;
+            requestedBlobs[0] = 1 + (rand() % (NUM_SHOW_BLOBS - 1));
         }
+        /*
+        for(int i = 0; i < 10; i++) {
+            std::cout << requestedBlobs[i] << ", ";
+        }
+        */
         newRequests[currReq] = new Request(requestedBlobs);
         master->requestQueue.push_back(newRequests[currReq]);
         requestList.push_back(newRequests[currReq]);
