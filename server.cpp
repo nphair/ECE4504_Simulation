@@ -49,6 +49,7 @@ void Server::update()
         Request * request = requestQueue.front();
         request->outgoing = process_request(request);
         std::cout << "Outgoing " << request->outgoing << "\n";
+        request->roundCount++;
         master->requestQueue.push_front(request);
         requestQueue.pop_front();
         currRoundWorkUnits--;

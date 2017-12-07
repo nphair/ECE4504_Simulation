@@ -73,12 +73,13 @@ int main(int argc, char *argv[])
     for (int currRnds = 0; currRnds < TOTAL_ROUNDS; currRnds++)
     {
         requestGen(masterLoadBalancer, requestMasterList, NUM_REQUESTS_GENERATED);
-        for (int t = 0; t < requestMasterList.size(); t++)
+
+        /*for (int t = 0; t < requestMasterList.size(); t++)
         {
             requestMasterList[t]->roundCount++;
-        }
+        }*/
         masterLoadBalancer->update();
-        std::cout << "Update\n";
+        std::cout << "Update Round #" << currRnds << "\n";
     }
     //Add our generated requests for the round to the back of the requestQueue of the masterLoadBalancerd
     //Keep master list of all requests in the system (actual objects)

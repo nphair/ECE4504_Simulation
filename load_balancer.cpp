@@ -81,6 +81,12 @@ void LoadBalancer::update()
         Request * currReq = requestQueue.front();
         if (!currReq->outgoing)
         {
+            if (currReq->shows[0] == -1)
+            {
+                int r = 2+2;
+            }
+            int misses = 0;
+
             for (int k = 0; k < MAX_BLOB_ACCESSES_PER_REQUEST; k++)
             {
                 if (currReq->shows[k] != -1 && this->containsBlob(currReq->shows[k]))
@@ -91,19 +97,28 @@ void LoadBalancer::update()
                     auto target_dest = target_load_dest_pair.second;
                     auto target_dest_queue = target_dest->requestQueue;
 
+
+                    currReq->roundCount++;
                     roundLoadDict[currReq->shows[k]].second->requestQueue.push_back(currReq);
                     requestQueue.pop_front();
                     currRoundWorkUnits--;
+
                     break;
                 }
                 else
-                {
-                    master->requestQueue.push_front(currReq);
-                }
+                    misses++;
             }
+            if (misses == 10)
+            {
+                requestQueue.pop_front();
+                master->requestQueue.push_front(currReq);
+            }
+        int d = 2+2;
         }
         else
         {
+                        requestQueue.pop_front();
+
             if (master != NULL) //No work cost, YET TODO
             {
                 master->requestQueue.push_front(currReq);
@@ -113,10 +128,17 @@ void LoadBalancer::update()
                 totalRoundsTakenByReqs += currReq->roundCount;
                 totalReqsCompleted++;
             }
-            requestQueue.pop_front();
         }
-        std::cout << currRoundWorkUnits << " work done\n";
+        /*if (requestQueue.size() > 0){
+            //std::cout << workUnits << "\n";
+            for (int f = 0; f < 10; f++)
+            {
+                //std::cout << requestQueue.front()->shows[f] << ",";
+            }
+            //std::cout << "\n";
+        }*/
     }
+//    std::cout << "\n";
 
     //Calculate currLoad
     //for (int m = 0; m < MAX_NUM_SLAVES; m++)
