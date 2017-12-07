@@ -44,7 +44,7 @@ bool Server::process_request(Request * request)
 void Server::update()
 {
     int currRoundWorkUnits = workUnits;
-    while (currRoundWorkUnits > 0 || requestQueue.empty()) {
+    while (currRoundWorkUnits > 0 && !requestQueue.empty()) {
         Request * request = requestQueue.front();
         request->outgoing = process_request(request);
         master->requestQueue.push_front(request);
