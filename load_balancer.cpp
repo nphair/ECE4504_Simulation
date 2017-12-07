@@ -22,23 +22,23 @@ bool LoadBalancer::containsBlob(int potentialNum)
     return false;
 }
 
-void LoadBalancer::setShowBlobs(int numSlaves)
+void LoadBalancer::setShowBlobs(int numSlaves, bool test)
 {
     //loop thru every slave
     for (int slv = 0; slv < numSlaves; slv++)
     {
-        for (int slavNum = 0; slavNum < MAX_SERVER_STORAGE; slavNum++)
+
+        for (int slavNum = 0; slavNum < NUM_SHOW_BLOBS; slavNum++)
         {
+            if (test){
+                slave[slv]->showBlobs[slavNum];
+
+                this->containsBlob(slave[slv]->showBlobs[slavNum]);
+            }
             if (slave[slv]->showBlobs[slavNum] != -1 && !this->containsBlob(slave[slv]->showBlobs[slavNum]))
             {
-                for (int i = 0; i < MAX_SERVER_STORAGE; i++)
-                {
-                    if (showBlobs[i] == -1)
-                    {
-                        showBlobs[i] = slave[slv]->showBlobs[slavNum];
-                        break;
-                    }
-                }
+
+                        showBlobs[slave[slv]->showBlobs[slavNum]] = slave[slv]->showBlobs[slavNum];
             }
         }
     }
@@ -65,12 +65,6 @@ void LoadBalancer::update()
             }
         }
     }
-
-    for (int x = 0; x < NUM_SHOW_BLOBS; x++)
-    {
-        std::cout << x << " " << roundLoadDict[x].second << "\n";
-    }
-
 
     while (currRoundWorkUnits > 0 && !requestQueue.empty())
     {
@@ -105,8 +99,8 @@ void LoadBalancer::update()
                 totalRoundsTakenByReqs += currReq->roundCount;
                 totalReqsCompleted++;
             }
+            requestQueue.pop_front();
         }
-        requestQueue.pop_front();
     }
 
     //Calculate currLoad

@@ -52,7 +52,6 @@ int main(int argc, char *argv[])
             LoadBalancer * currRack = new LoadBalancer(currCluster);
             currCluster->slave.push_back(currRack);
 
-
             for (int k = 0; k < serversPerRack; k++)
             {
                 //currRack->slave[k] = new Server(currRack, SERVER_WORK, serverStorage);
@@ -62,10 +61,12 @@ int main(int argc, char *argv[])
                 //((Server*)currRack->slave[k])->setShowBlobs(NUM_SHOW_BLOBS, (blobIter) % NUM_SHOW_BLOBS);
                 blobIter += serverStorage;
             }
-            currRack->setShowBlobs(serversPerRack);
+            currRack->setShowBlobs(serversPerRack, false);
         }
-        currCluster->setShowBlobs(MAX_NUM_SLAVES);
+        currCluster->setShowBlobs(MAX_NUM_SLAVES, false);
     }
+    masterLoadBalancer->setShowBlobs(numClusters, true);
+
     std::cout << "WSC Initialization Completed.\n";
 
     std::vector<Request*> requestMasterList;
@@ -77,6 +78,7 @@ int main(int argc, char *argv[])
             requestMasterList[t]->roundCount++;
         }
         masterLoadBalancer->update();
+        std::cout << "Update\n";
     }
     //Add our generated requests for the round to the back of the requestQueue of the masterLoadBalancerd
     //Keep master list of all requests in the system (actual objects)
@@ -84,11 +86,16 @@ int main(int argc, char *argv[])
     //Call masterLoadBalancer.update()
     //Loop again
 
-    double roundsPerRequest = masterLoadBalancer->totalRoundsTakenByReqs / masterLoadBalancer->totalReqsCompleted;
-    std::cout << "Average Time per Request: " << roundsPerRequest * 0.001 << "\n";
-    double totalCost = (serverNum * SERVER_COST) + ((MAX_NUM_SLAVES * numClusters) * RACK_COST) + (serverNum * serverStorage * STORAGE_BLOB_COST) + (LB_COST * (1 + numClusters));
-    std::cout << "Total Cost: " << totalCost << "\n";
+    std::cout << "Total Rounds Run: " << masterLoadBalancer->totalRoundsTakenByReqs << "\n";
+    std::cout << "Total Requests Completed: " << masterLoadBalancer->totalReqsCompleted << "\n";
 
+    if ( masterLoadBalancer->totalReqsCompleted > 0)
+    {
+        double roundsPerRequest = masterLoadBalancer->totalRoundsTakenByReqs / masterLoadBalancer->totalReqsCompleted;
+        std::cout << "Average Time per Request: " << roundsPerRequest * 0.001 << "\n";
+        double totalCost = (serverNum * SERVER_COST) + ((MAX_NUM_SLAVES * numClusters) * RACK_COST) + (serverNum * serverStorage * STORAGE_BLOB_COST) + (LB_COST * (1 + numClusters));
+        std::cout << "Total Cost: " << totalCost << "\n";
+    }
     return 0;
 }
 

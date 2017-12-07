@@ -19,7 +19,7 @@ public:
     std::vector<Destination *> slave;
     int totalRoundsTakenByReqs;
     int totalReqsCompleted;
-    void setShowBlobs(int);
+    void setShowBlobs(int, bool);
 };
 
 
