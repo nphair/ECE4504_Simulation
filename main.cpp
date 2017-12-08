@@ -32,7 +32,10 @@ int main(int argc, char *argv[])
     const int numClusters = serverNum / (serversPerRack * MAX_NUM_SLAVES);
     int blobIter = 0;
 
-    std::cout << "# of Servers: " << serverNum << "\n";
+    std::cout << "# of Servers: " << numClusters * MAX_NUM_SLAVES * serversPerRack << "\n";
+    std::cout << "# of Servers Per Rack: " << serversPerRack << "\n";
+    std::cout << "# of Blobs Stored Each Server: " << serverStorage << "\n";
+
     std::cout << "# of Racks: " << MAX_NUM_SLAVES * numClusters << "\n";
     std::cout << "# of Load Balancers: " << 1+numClusters << "\n";
     std::cout << "# of Clusters: " << numClusters << "\n";

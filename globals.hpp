@@ -1,5 +1,5 @@
 #define NUM_SHOW_BLOBS 7000
-#define LOAD_BALANCE_WORK 250
+#define LOAD_BALANCE_WORK 125
 #define SERVER_WORK 34
 //1 round is 1/1000 of a second
 #define TOTAL_ROUNDS 50
